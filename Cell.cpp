@@ -270,8 +270,8 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	//minConductance = maxConductance /50.2;
 	//maxConductance = (1/5e6);
 	//minConductance = maxConductance/2;
-	shiftGmax = minConductance + 0.9*(maxConductance-minConductance);
-	shiftGmin = minConductance + 0.7*(maxConductance-minConductance);
+	shiftGmax = minConductance + 0.7*(maxConductance-minConductance);
+	shiftGmin = minConductance + 0.5*(maxConductance-minConductance);
 	//avgMaxConductance = (NumCellperSynapse)*maxConductance; // Average maximum cell conductance (S)
 	//avgMinConductance = (NumCellperSynapse)*minConductance; // Average minimum cell conductance (S)
 	avgMaxConductance = (NumCellperSynapse)*shiftGmax;
@@ -323,16 +323,17 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	localGen.seed(std::time(0));
 	
 	/* Device-to-device weight update variation */
-	NL_LTP =3;	// LTP nonlinearity
-	NL_LTD =3;	// LTD nonlinearity
+	NL_LTP=5;	// LTP nonlinearity
+	NL_LTD=-5;	// LTD nonlinearity
+	NL_LTD=NL_LTD*(-1);
 	sigmaDtoD = 0;	// Sigma of device-to-device weight update vairation in gaussian distribution
 	gaussian_dist2 = new std::normal_distribution<double>(0, sigmaDtoD);	// Set up mean and stddev for device-to-device weight update vairation
 	paramALTP = getParamA(NL_LTP + (*gaussian_dist2)(localGen)) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
 	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
 
 	/* Cycle-to-cycle weight update variation */
-	//sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
-	sigmaCtoC = 0;
+	sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
+	//sigmaCtoC = 0;
 	gaussian_dist3 = new std::normal_distribution<double>(0, sigmaCtoC);    // Set up mean and stddev for cycle-to-cycle weight update vairation
 
 	/* Conductance range variation */
@@ -384,7 +385,7 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 	deltaWeightNormalized = NumCellperSynapse * deltaWeightNormalized;
 	double xPulsemax = InvNonlinearWeight(shiftGmax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	double xPulsemin = InvNonlinearWeight(shiftGmin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	int maxNumLTP = (int)(xPulsemax - xPulsemin);
+	int maxNumLTP = 18.17;
 	
 	
 	if (deltaWeightNormalized > 0) {	// LTP
@@ -397,9 +398,9 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 			paramBLTP = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTP/paramALTP));
 
 			xPulse = InvNonlinearWeight(conductanceN[NumCell], maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-			if (xPulse + numPulse > xPulsemax) {
-				conductanceNewN = NonlinearWeight(xPulsemax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-			}
+			//if (xPulse + numPulse > xPulsemax) {
+			//	conductanceNewN = NonlinearWeight(xPulsemax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+			//}
 			conductanceNewN = NonlinearWeight(xPulse+numPulse, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 		} else {
 			xPulse = (conductanceN[NumCell]- minConductance) / (maxConductance - minConductance) * maxNumLevelLTP;
@@ -414,9 +415,9 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 		if (nonlinearWrite) {
 			paramBLTD = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTD/paramALTD));
 			xPulse = InvNonlinearWeight(conductanceN[NumCell], maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
-			if (xPulse + numPulse < xPulsemin) {
-				conductanceNewN = NonlinearWeight(xPulsemin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-			}
+		//	if (xPulse + numPulse < xPulsemin) {
+		//		conductanceNewN = NonlinearWeight(xPulsemin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+		//	}
 			conductanceNewN= NonlinearWeight(xPulse+numPulse, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
 		} else {
 			xPulse = (conductanceN[NumCell] - minConductance) / (maxConductance - minConductance) * maxNumLevelLTD;

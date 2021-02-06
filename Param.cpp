@@ -53,8 +53,8 @@ Param::Param() {
 	nHide = 100;      // # of neurons in hidden layer
 	nOutput = 10;     // # of neurons in output layer
 	lnum=1;
-	alpha1 = 0.8;	// Learning rate for the weights from input to hidden layer
-	alpha2 = 0.4;// Learning rate for the weights from hidden to output layer
+	alpha1 = 0.4;	// Learning rate for the weights from input to hidden layer
+	alpha2 = 0.2;// Learning rate for the weights from hidden to output layer
 	alpha1=alpha1*lnum;
 	alpha2=alpha2*lnum;
 	maxWeight = 1;	// Upper bound of weight value
