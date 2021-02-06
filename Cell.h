@@ -98,6 +98,7 @@ public:
 	double linearpointltp;
 	double linearpointltd;
 	double symmetricpoint;
+	double shiftconductancelevel;
 };
 
 class SRAM: public Cell {
