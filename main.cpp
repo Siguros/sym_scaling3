@@ -133,8 +133,10 @@ int main() {
 	double NL = static_cast<RealDevice*>(arrayIH->cell[0][0])->NL_LTP;
 	int N = param->NumcellPerSynapse;
 	int CS = static_cast<RealDevice*>(arrayIH->cell[0][0])->maxNumLevelLTP;
+	int shift = static_cast<RealDevice*>(arrayIH->cell[0][0])->shiftconductancelevel;
 	double LA = param->alpha1;
 	printf("opt: %s NL:%.2f N: %d CS: %d LA: %.2f\n", param->optimization_type, NL, N, CS, LA);
+	printf("shiftlevel: %d\n", shift);
 	string filename;
 	filename.append(param->optimization_type);
 	char tempfile[10];

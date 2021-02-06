@@ -270,8 +270,8 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	//minConductance = maxConductance /50.2;
 	//maxConductance = (1/5e6);
 	//minConductance = maxConductance/2;
-	shiftGmax =0.925*(maxConductance-minConductance);
-	shiftGmin =0.657*(maxConductance-minConductance);
+	shiftGmax=0.925*(maxConductance-minConductance);
+	shiftGmin=0.657*(maxConductance-minConductance);
 	//avgMaxConductance = (NumCellperSynapse)*maxConductance; // Average maximum cell conductance (S)
 	//avgMinConductance = (NumCellperSynapse)*minConductance; // Average minimum cell conductance (S)
 	avgMaxConductance = (NumCellperSynapse)*shiftGmax;
@@ -331,7 +331,7 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	paramALTP = getParamA(NL_LTP + (*gaussian_dist2)(localGen)) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
 	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
 	paramBLTP = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTP/paramALTP));
-	shiftconductancelevel=32;
+	shiftconductancelevel=8;
 	/* Cycle-to-cycle weight update variation */
 	//sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
 	sigmaCtoC = 0;
