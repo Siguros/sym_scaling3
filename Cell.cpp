@@ -270,8 +270,8 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	//minConductance = maxConductance /50.2;
 	//maxConductance = (1/5e6);
 	//minConductance = maxConductance/2;
-	shiftGmax = minConductance + 0.7*(maxConductance-minConductance);
-	shiftGmin = minConductance + 0.5*(maxConductance-minConductance);
+	//iftGmax = minConductance + 0.7*(maxConductance-minConductance);
+	//shiftGmin = minConductance + 0.5*(maxConductance-minConductance);
 	//avgMaxConductance = (NumCellperSynapse)*maxConductance; // Average maximum cell conductance (S)
 	//avgMinConductance = (NumCellperSynapse)*minConductance; // Average minimum cell conductance (S)
 	avgMaxConductance = (NumCellperSynapse)*shiftGmax;
@@ -388,9 +388,13 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 	double conductanceNewN= conductanceN[NumCell];
 	deltaWeightNormalized = deltaWeightNormalized / (maxWeight - minWeight);
 	deltaWeightNormalized = NumCellperSynapse * deltaWeightNormalized;
-	double xPulsemax = InvNonlinearWeight(shiftGmax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	double xPulsemin = InvNonlinearWeight(shiftGmin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	int maxNumLTP = 18.17;
+	//double xPulsemax = InvNonlinearWeight(shiftGmax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	//double xPulsemin = InvNonlinearWeight(ShiftGmin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	double xPulsemax = linearpointltp+16;
+	double xPulsemin = linearpointltp-16;
+	if(xPulsemax > maxNumLevelLTP){xPulsemax = maxNumLevelLTP;}
+	if(xPulsemin < 0){xPulsemin = 0;}
+	double maxNumLTP = xPulsemax-xPulsemin;
 	
 	
 	if (deltaWeightNormalized > 0) {	// LTP
