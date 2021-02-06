@@ -332,14 +332,14 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
 
 	/* Cycle-to-cycle weight update variation */
-	sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
-	//sigmaCtoC = 0;
+	//sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
+	sigmaCtoC = 0;
 	gaussian_dist3 = new std::normal_distribution<double>(0, sigmaCtoC);    // Set up mean and stddev for cycle-to-cycle weight update vairation
 	linearpointltp = getLinear(paramALTP, maxNumLevelLTP);
 	linearpointltd= getLinear(paramALTD, maxNumLevelLTD);
-	double shiftconductancelevel=32;
-	shiftGmax = minConductance+(linearpointltp+shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
-	shiftGmin = minConductance+(linearpointltp-shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
+	//double shiftconductancelevel=32;
+	//shiftGmax = minConductance+(linearpointltp+shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
+	//shiftGmin = minConductance+(linearpointltp-shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
 	symmetricpoint = getSymmetric(paramALTP, maxNumLevelLTP, paramALTD, maxNumLevelLTD);
 	/* Conductance range variation */
 	conductanceRangeVar = false;    // Consider variation of conductance range or not
