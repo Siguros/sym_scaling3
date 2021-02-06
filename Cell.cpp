@@ -270,8 +270,8 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	//minConductance = maxConductance /50.2;
 	//maxConductance = (1/5e6);
 	//minConductance = maxConductance/2;
-	//iftGmax = minConductance + 0.7*(maxConductance-minConductance);
-	//shiftGmin = minConductance + 0.5*(maxConductance-minConductance);
+	shiftGmax =0.925*(maxConductance-minConductance);
+	shiftGmin =0.657*(maxConductance-minConductance);
 	//avgMaxConductance = (NumCellperSynapse)*maxConductance; // Average maximum cell conductance (S)
 	//avgMinConductance = (NumCellperSynapse)*minConductance; // Average minimum cell conductance (S)
 	avgMaxConductance = (NumCellperSynapse)*shiftGmax;
@@ -341,9 +341,11 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	double shiftconductancelevel=32;
 	//shiftGmax = minConductance+(linearpointltp+shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
 	//shiftGmin = minConductance+(linearpointltp-shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
-	shiftGmax = NonlinearWeight(linearpointltp+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	shiftGmin = NonlinearWeight(linearpointltp-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	//shiftGmax = NonlinearWeight(linearpointltp+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	//shiftGmin = NonlinearWeight(linearpointltp-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	symmetricpoint = getSymmetric(paramALTP, maxNumLevelLTP, paramALTD, maxNumLevelLTD);
+	//std::cout << shiftGmax/(maxConductance-minConductance)<<std::endl;
+	//std::cout << shiftGmin/(maxConductance-minConductance)<<std::endl;
 	/* Conductance range variation */
 	conductanceRangeVar = false;    // Consider variation of conductance range or not
 	maxConductanceVar = 0;  // Sigma of maxConductance variation (S)
