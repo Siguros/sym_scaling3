@@ -322,3 +322,15 @@ double NonlinearConductance(double C, double NL, double Vw, double Vr, double V)
 	return C_NL;
 }
 
+double getLinear(double A, double Pmax)
+{
+	
+	return A * log(Pmax /(A*(1 - exp(-Pmax / A))));
+	//turn A*log(B/A);
+}
+
+double getSymmetric(double Altp, double Pmaxltp, double Altd, double Pmaxltd)
+{
+	return log(Pmaxltd*(1 - exp(-Pmaxltp / Altp)/Altd)/ (Pmaxltp*(1 - exp(-Pmaxltd / Altd)))/Altp)*(1 / Altd - 1 / Altp);
+}
+
