@@ -330,7 +330,7 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	gaussian_dist2 = new std::normal_distribution<double>(0, sigmaDtoD);	// Set up mean and stddev for device-to-device weight update vairation
 	paramALTP = getParamA(NL_LTP + (*gaussian_dist2)(localGen)) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
 	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
-
+	shiftconductancelevel=32;
 	/* Cycle-to-cycle weight update variation */
 	//sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
 	sigmaCtoC = 0;
@@ -390,8 +390,8 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 	deltaWeightNormalized = NumCellperSynapse * deltaWeightNormalized;
 	//double xPulsemax = InvNonlinearWeight(shiftGmax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	//double xPulsemin = InvNonlinearWeight(ShiftGmin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	double xPulsemax = linearpointltp+16;
-	double xPulsemin = linearpointltp-16;
+	double xPulsemax = linearpointltp+shiftconductancelevel/2;
+	double xPulsemin = linearpointltp-shiftconductancelevel/2;
 	if(xPulsemax > maxNumLevelLTP){xPulsemax = maxNumLevelLTP;}
 	if(xPulsemin < 0){xPulsemin = 0;}
 	double maxNumLTP = xPulsemax-xPulsemin;
