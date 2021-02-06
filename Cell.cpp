@@ -330,6 +330,7 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	gaussian_dist2 = new std::normal_distribution<double>(0, sigmaDtoD);	// Set up mean and stddev for device-to-device weight update vairation
 	paramALTP = getParamA(NL_LTP + (*gaussian_dist2)(localGen)) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
 	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
+	paramBLTP = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTP/paramALTP));
 	shiftconductancelevel=32;
 	/* Cycle-to-cycle weight update variation */
 	//sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
@@ -337,9 +338,11 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	gaussian_dist3 = new std::normal_distribution<double>(0, sigmaCtoC);    // Set up mean and stddev for cycle-to-cycle weight update vairation
 	linearpointltp = getLinear(paramALTP, maxNumLevelLTP);
 	linearpointltd= getLinear(paramALTD, maxNumLevelLTD);
-	//double shiftconductancelevel=32;
+	double shiftconductancelevel=32;
 	//shiftGmax = minConductance+(linearpointltp+shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
 	//shiftGmin = minConductance+(linearpointltp-shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
+	shiftGmax = NonlinearWeight(linearpointltp+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	shiftGmin = NonlinearWeight(linearpointltp-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	symmetricpoint = getSymmetric(paramALTP, maxNumLevelLTP, paramALTD, maxNumLevelLTD);
 	/* Conductance range variation */
 	conductanceRangeVar = false;    // Consider variation of conductance range or not
@@ -392,9 +395,9 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 	//double xPulsemin = InvNonlinearWeight(ShiftGmin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	double xPulsemax = linearpointltp+shiftconductancelevel/2;
 	double xPulsemin = linearpointltp-shiftconductancelevel/2;
-	if(xPulsemax > maxNumLevelLTP){xPulsemax = maxNumLevelLTP;}
-	if(xPulsemin < 0){xPulsemin = 0;}
-	double maxNumLTP = xPulsemax-xPulsemin;
+	//if(xPulsemax > maxNumLevelLTP){xPulsemax = maxNumLevelLTP;}
+	//if(xPulsemin < 0){xPulsemin = 0;}
+	int maxNumLTP = shiftconductancelevel;
 	
 	
 	if (deltaWeightNormalized > 0) {	// LTP
