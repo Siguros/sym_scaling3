@@ -95,7 +95,7 @@ void Validate() {
 	double sumArrayReadEnergyHO = 0;    // Use a temporary variable here since OpenMP does not support reduction on class member
 	double sumNeuroSimReadEnergyHO = 0; // Use a temporary variable here since OpenMP does not support reduction on class member
 	double sumReadLatencyHO = 0;    // Use a temporary variable here since OpenMP does not support reduction on class member
-	int countpop[10];
+	int countpop[10]={0};
     	if(eNVM* temp = dynamic_cast<eNVM*>(arrayIH->cell[0][0]))
     {
         readVoltageIH = static_cast<eNVM*>(arrayIH->cell[0][0])->readVoltage;
@@ -404,9 +404,7 @@ void Validate() {
 				}
 			}
 		}
-		if (testOutput[i][countNum] == 1) {
-			correct++;
-		}
+	
 	}
 	if (!param->useHardwareInTraining) {    // Calculate the classification latency and energy only for offline classification
 		arrayIH->readEnergy += sumArrayReadEnergyIH;
@@ -416,5 +414,8 @@ void Validate() {
 		subArrayIH->readLatency += sumReadLatencyIH;
 		subArrayHO->readLatency += sumReadLatencyHO;
 	}
+		if (testOutput[i][countNum] == 1) {
+			correct++;
+		}
 }
 
