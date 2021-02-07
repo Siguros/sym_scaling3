@@ -133,12 +133,13 @@ int main() {
 	double NL = static_cast<RealDevice*>(arrayIH->cell[0][0])->NL_LTP;
 	int N = param->NumcellPerSynapse;
 	int CS = static_cast<RealDevice*>(arrayIH->cell[0][0])->maxNumLevelLTP;
-	int shift = static_cast<RealDevice*>(arrayIH->cell[0][0])->shiftconductancelevel;
+	int shiftltp = static_cast<RealDevice*>(arrayIH->cell[0][0])->shiftltplevel;
+	int shiftltd = static_cast<RealDevice*>(arrayIH->cell[0][0])->shiftltdlevel;
 	double LA = param->alpha1;
 	printf("opt: %s NL:%.2f N: %d CS: %d LA: %.2f\n", param->optimization_type, NL, N, CS, LA);
-	printf("shiftlevel: %d\n", shift);
+	printf("shiftltp: %d shiftltd: %d\n", shiftltp,shiftltd);
 	string filename;
-	filename.append("sym");
+	filename.append("Lin");
 	filename.append(param->optimization_type);
 	char tempfile[10];
 	sprintf(tempfile, "%.2f", NL);
@@ -152,8 +153,10 @@ int main() {
 	// filename.append("/");
 	sprintf(tempfile, "%.2f", LA);
 	filename.append(tempfile);
-	sprintf(tempfile,"%d",shift);
+	sprintf(tempfile,"%d",shiftltp);
 	filename.append(tempfile);
+	   sprintf(tempfile,"%d",shiftltd);
+        filename.append(tempfile);
 	// filename.append("/");
 	// filename.append(".csv");
 

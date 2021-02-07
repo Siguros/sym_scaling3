@@ -71,6 +71,12 @@ public:
 	double avgMinConductance;   // Average minimum cell conductance (S)
 	double shiftGmax;
 	double shiftGmin;
+        double xPulsemaxltd;
+        double xPulseminltd;
+	double xPulsemaxltp;
+	double xPulseminltp;
+	int shiftltplevel;
+	int shiftltdlevel;
 	bool cmosAccess;	// True: Pseudo-crossbar (256T256R), false: cross-point
     bool isSTTMRAM; // if it is a STTMRAM device
     // modified above

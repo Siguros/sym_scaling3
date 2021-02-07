@@ -333,7 +333,9 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	paramALTP = getParamA(NL_LTP + (*gaussian_dist2)(localGen)) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
 	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
 	paramBLTP = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTP/paramALTP));
-	shiftconductancelevel=8;
+	paramBLTD = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTD/paramALTD));
+//	shiftconductancelevel=32;
+	
 	/* Cycle-to-cycle weight update variation */
 	//sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
 	sigmaCtoC = 0;
@@ -345,20 +347,29 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	//shiftGmin = minConductance+(linearpointltp-shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
 	//shiftGmax= 0;
 	//shiftGmin= 0;
+	shiftGmax = NonlinearWeight(linearpointltp, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+        shiftGmin = NonlinearWeight(linearpointltd, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
 	//shiftGmax = NonlinearWeight((linearpointltp+linearpointltd)/2+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	//shiftGmin = NonlinearWeight((linearpointltp+linearpointltd)/2-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	symmetricpoint = getSymmetric(paramALTP, maxNumLevelLTP,
- paramALTD, maxNumLevelLTD);
-	shiftGmax = NonlinearWeight(symmetricpoint+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-        shiftGmin = NonlinearWeight(symmetricpoint-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	symmetricpoint = getSymmetric(paramALTP, maxNumLevelLTP,paramALTD, maxNumLevelLTD);
+	//shiftGmax = NonlinearWeight(symmetricpoint, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+        //shiftGmin = NonlinearWeight(symmetricpoint-shiftconductancelevel, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
+	
+        xPulsemaxltp = InvNonlinearWeight(shiftGmax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+        xPulseminltp = InvNonlinearWeight(shiftGmin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	xPulsemaxltd = InvNonlinearWeight(shiftGmax, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
+        xPulseminltd = InvNonlinearWeight(shiftGmin, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
+	shiftltplevel = (int)(xPulsemaxltp - xPulseminltp);
+	shiftltdlevel = (int)(xPulsemaxltd - xPulseminltd);
+
 	//shiftGmax=0.925*(maxConductance-minConductance);
         //shiftGmin=0.657*(maxConductance-minConductance); 
 	//symmetricpoint = getSymmetric(paramALTP, maxNumLevelLTP, paramALTD, maxNumLevelLTD);
 	//iftGmax = shiftG1;
 	//shiftGmin = shiftG2;
 //	std::cout << shiftGmax << shiftGmin << std::endl;
-	//std::cout << shiftGmax/(maxConductance-minConductance)<<std::endl;
-	//std::cout << shiftGmin/(maxConductance-minConductance)<<std::endl;
+//	std::cout << shiftGmax/(maxConductance-minConductance)<<std::endl;
+//	std::cout << shiftGmin/(maxConductance-minConductance)<<std::endl;
 	/* Conductance range variation */
 	 avgMaxConductance = (NumCellperSynapse)*shiftGmax;
         avgMinConductance = (NumCellperSynapse)*shiftGmin;
@@ -410,15 +421,17 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 	deltaWeightNormalized = NumCellperSynapse * deltaWeightNormalized;
 	//double xPulsemax = InvNonlinearWeight(shiftGmax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	//double xPulsemin = InvNonlinearWeight(ShiftGmin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	double xPulsemax = linearpointltp+shiftconductancelevel/2;
-	double xPulsemin = linearpointltp-shiftconductancelevel/2;
+	//double xPulsemax = linearpointltp+shiftconductancelevel/2;
+	//double xPulsemin = linearpointltp-shiftconductancelevel/2;
 	//if(xPulsemax > maxNumLevelLTP){xPulsemax = maxNumLevelLTP;}
 	//if(xPulsemin < 0){xPulsemin = 0;}
-	double xPulsemaxltd = InvNonlinearWeight(shiftGmax, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
-	double xPulseminltd = InvNonlinearWeight(ShiftGmin, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
-	int maxNumLTP = shiftconductancelevel;
+	//double xPulsemaxltd = InvNonlinearWeight(shiftGmax, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
+	//double xPulseminltd = InvNonlinearWeight(shiftGmin, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
+	int maxNumLTP = (int)(xPulsemaxltp - xPulseminltp);
 	int maxNumLTD = (int)(xPulsemaxltd - xPulseminltd);
-	
+//	std::cout<<maxNumLTP<<std::endl;
+//	std::cout<<maxNumLTD<<std::endl;
+	//int maxNumLTD = maxNumLTP;
 	if (deltaWeightNormalized > 0) {	// LTP
 		deltaWeightNormalized = truncate(deltaWeightNormalized, maxNumLTP);
 		numPulse = deltaWeightNormalized * maxNumLTP;
@@ -438,7 +451,7 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 			conductanceNewN = (xPulse+numPulse) / maxNumLevelLTP * (maxConductance - minConductance) + minConductance;
 		}
 	} else {	// LTD
-		deltaWeightNormalized = truncate(deltaWeightNormalized, maxNumLTP);
+		deltaWeightNormalized = truncate(deltaWeightNormalized, maxNumLTD);
 		numPulse = deltaWeightNormalized * maxNumLTD;
 		if (numPulse > maxNumLTD) {
 			numPulse = maxNumLTD;
