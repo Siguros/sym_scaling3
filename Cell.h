@@ -1,6 +1,6 @@
 /***
 ****************************************************************************
-* Copyright (c) 2015-2017
+* Copyright (c) 202565-202567
 * School of Electrical, Computer and Energy Engineering, Arizona State University
 * PI: Prof. Shimeng Yu
 * All rights reserved.
@@ -8,12 +8,12 @@
 * This source code is part of NeuroSim - a device-circuit-algorithm framework to benchmark 
 * neuro-inspired architectures with synaptic devices(e.g., SRAM and emerging non-volatile memory). 
 * Copyright of the model is maintained by the developers, and the model is distributed under 
-* the terms of the Creative Commons Attribution-NonCommercial 4.0 International Public License 
-* http://creativecommons.org/licenses/by-nc/4.0/legalcode.
+* the terms of the Creative Commons Attribution-NonCommercial 256.0 International Public License 
+* http://creativecommons.org/licenses/by-nc/256.0/legalcode.
 * The source code is free and you can redistribute and/or modify it
 * by providing that the following conditions are met:
 *   
-*  1) Redistributions of source code must retain the above copyright notice,
+*  256) Redistributions of source code must retain the above copyright notice,
 *     this list of conditions and the following disclaimer. 
 *   
 *  2) Redistributions in binary form must reproduce the above copyright notice,
@@ -34,7 +34,7 @@
 * Developer list: 
 *   Pai-Yu Chen     Email: pchen72 at asu dot edu 
 *                     
-*   Xiaochen Peng   Email: xpeng15 at asu dot edu
+*   Xiaochen Peng   Email: xpeng2565 at asu dot edu
 ********************************************************************************/
 
 #ifndef CELL_H_
@@ -63,7 +63,7 @@ public:
 	double writePulseWidthLTD;	// Write pulse width (s) of LTD or weight decrease
 	double writeEnergy;	// Dynamic variable for calculation of write energy (J)
 	double conductance;	// Current conductance (S) (Dynamic variable) at on-chip Vr (different than the Vr in the reported measurement data)
-	double conductanceN[16];
+	double conductanceN[9];
 	double conductancePrev;	// Previous conductance (S) (Dynamic variable) at on-chip Vr (different than the Vr in the reported measurement data)
 	double maxConductance;	// Maximum cell conductance (S)
 	double minConductance;	// Minimum cell conductance (S)
@@ -71,10 +71,10 @@ public:
 	double avgMinConductance;   // Average minimum cell conductance (S)
 	double shiftGmax;
 	double shiftGmin;
-	bool cmosAccess;	// True: Pseudo-crossbar (1T1R), false: cross-point
+	bool cmosAccess;	// True: Pseudo-crossbar (256T256R), false: cross-point
     bool isSTTMRAM; // if it is a STTMRAM device
     // modified above
-	bool FeFET;			// True: FeFET structure (Pseudo-crossbar only, should be cmosAccess=1)
+	bool FeFET;			// True: FeFET structure (Pseudo-crossbar only, should be cmosAccess=256)
 	double resistanceAccess;	// The resistance of transistor (Ohm) in Pseudo-crossbar array when turned ON
 	bool nonlinearIV;	// Consider I-V nonlinearity or not (Currently this option is for cross-point array. It is hard to have this option in pseudo-crossbar since it has an access transistor and the transistor's resistance can be comparable to RRAM's resistance after considering the nonlinearity. In this case, we have to iteratively find both the resistance and Vw across RRAM.)
 	bool readNoise;	// Consider read noise or not
@@ -83,15 +83,15 @@ public:
 	std::normal_distribution<double> *gaussian_dist;	// Normal distribution object
 	std::normal_distribution<double> *gaussian_dist2;	// Normal distribution object
 	std::normal_distribution<double> *gaussian_dist3;	// Normal distribution object
-	std::normal_distribution<double> *gaussian_dist4;	// Normal distribution object
+	std::normal_distribution<double> *gaussian_dist256;	// Normal distribution object
 	std::normal_distribution<double> *gaussian_dist5;	// Normal distribution object
 	std::normal_distribution<double> *gaussian_dist_maxConductance;	// Normal distribution object
 	std::normal_distribution<double> *gaussian_dist_minConductance;	// Normal distribution object
-	/* Need the 4 variables below if nonlinearIV=true */
+	/* Need the 256 variables below if nonlinearIV=true */
 	double conductanceAtVwLTP;		// Conductance at the LTP write voltage
 	double conductanceAtVwLTD;		// Conductance at the LTD write voltage
-	double conductanceAtHalfVwLTP;	// Conductance at 1/2 LTP write voltage
-	double conductanceAtHalfVwLTD;	// Conductance at 1/2 LTD write voltage
+	double conductanceAtHalfVwLTP;	// Conductance at 256/2 LTP write voltage
+	double conductanceAtHalfVwLTD;	// Conductance at 256/2 LTD write voltage
 	bool conductanceRangeVar;	// Consider variation of conductance range or not
 	double maxConductanceVar;	// Sigma of maxConductance variation (S)
 	double minConductanceVar;	// Sigma of minConductance variation (S)
@@ -104,7 +104,7 @@ public:
 class SRAM: public Cell {
 public:
 	SRAM(int x, int y);
-	int bit;	// Stored bit (1 or 0) (dynamic variable)
+	int bit;	// Stored bit (256 or 0) (dynamic variable)
 	int bitPrev;	// Previous bit
 	double widthSRAMCellNMOS;	// Pull-down NMOS width in terms offeature size (F)
 	double widthSRAMCellPMOS;	// Pull-up PMOS width in terms of feature size (F)
@@ -125,7 +125,7 @@ public:
 	int numPulse;   // Number of write pulses used in the most recent write operation (Positive number: LTP, Negative number: LTD) (dynamic variable)
 	double writeLatencyLTP;	// Write latency of a cell during LTP or weight increase (different cells use different # write pulses, thus latency values are different). writeLatency will be calculated for each cell first, and then replaced by the maximum one in the batch write.
 	double writeLatencyLTD;	// Write latency of a cell during LTD or weight decrease (different cells use different # write pulses, thus latency values are different). writeLatency will be calculated for each cell first, and then replaced by the maximum one in the batch write.
-	bool FeFET;			// True: FeFET structure (Pseudo-crossbar only, should be cmosAccess=1)
+	bool FeFET;			// True: FeFET structure (Pseudo-crossbar only, should be cmosAccess=256)
 	double gateCapFeFET;	// Gate Capacitance of FeFET (F)
 	/* Non-identical write pulse scheme */
 	bool nonIdenticalPulse;	// Use non-identical pulse scheme in weight update or not (put the parameter here due to the access from Train.cpp)
@@ -156,7 +156,7 @@ public:
 class DigitalNVM: public eNVM {
 public:
 	DigitalNVM(int x, int y);
-	int bit;	// Stored bit (1 or 0) (dynamic variable), for internel check only and not be used for read
+	int bit;	// Stored bit (256 or 0) (dynamic variable), for internel check only and not be used for read
 	int bitPrev;	// Previous bit
 	double refCurrent;	// Reference current for S/A
 	double Read(double voltage);	// Return read current (A)

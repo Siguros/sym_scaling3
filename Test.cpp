@@ -90,12 +90,13 @@ void Validate() {
 	double sumArrayReadEnergyIH = 0;   // Use a temporary variable here since OpenMP does not support reduction on class member
 	double sumNeuroSimReadEnergyIH = 0;   // Use a temporary variable here since OpenMP does not support reduction on class member
 	double sumReadLatencyIH = 0;    // Use a temporary variable here since OpenMP does not support reduction on class member
-    double readVoltageIH,readVoltageHO,readVoltageMSB;
-    double readPulseWidthIH,readPulseWidthHO,readPulseWidthMSB;
+    	double readVoltageIH,readVoltageHO,readVoltageMSB;
+   	 double readPulseWidthIH,readPulseWidthHO,readPulseWidthMSB;
 	double sumArrayReadEnergyHO = 0;    // Use a temporary variable here since OpenMP does not support reduction on class member
 	double sumNeuroSimReadEnergyHO = 0; // Use a temporary variable here since OpenMP does not support reduction on class member
 	double sumReadLatencyHO = 0;    // Use a temporary variable here since OpenMP does not support reduction on class member
-    if(eNVM* temp = dynamic_cast<eNVM*>(arrayIH->cell[0][0]))
+	int countpop[10];
+    	if(eNVM* temp = dynamic_cast<eNVM*>(arrayIH->cell[0][0]))
     {
         readVoltageIH = static_cast<eNVM*>(arrayIH->cell[0][0])->readVoltage;
         readVoltageHO = static_cast<eNVM*>(arrayHO->cell[0][0])->readVoltage;
@@ -139,6 +140,23 @@ void Validate() {
 							}
 							IsumMax += arrayIH->GetMaxCellReadCurrent(j,k);
 							IsumMin += arrayIH->GetMinCellReadCurrent(j,k);
+					
+						
+						for(int in=0; in<10; in++){
+						double s1= in/10;
+						double s2 =(in+1)/10;
+						int numcell= static_cast<AnalogNVM*>(arraIH->cell[0][0])->NumCellperSynapse;
+						for(int jn=0;jn<numcell; jn++){
+						double s3 = static_cast<AnalogNVM*>(arrayIH->cell[0][0])->conductanceN[jn];
+						double minCon = static_cast<AnalogNVM*>(arrayIH->cell[0][0])->minConductance;
+						double maxCon = static_cast<AnalogNVM*>(arrayHO->cell[0][0])->maxConductance;
+						if(s3>s1){
+						if(s3<s2){
+						countpop[in]+=1;
+						}
+						} 
+						}
+
 						}
 						sumArrayReadEnergyIH += Isum * readVoltageIH * readPulseWidthIH;
 						int outputDigits = 2*(CurrentToDigits(Isum, IsumMax-IsumMin)-CurrentToDigits(inputSum, IsumMax-IsumMin));
@@ -368,6 +386,10 @@ void Validate() {
 				sumNeuroSimReadEnergyHO += NeuroSimNeuronReadEnergy(subArrayHO, adderHO, muxHO, muxDecoderHO, dffHO, subtractorHO);
 				sumReadLatencyHO += NeuroSimSubArrayReadLatency(subArrayHO);
 				sumReadLatencyHO += NeuroSimNeuronReadLatency(subArrayHO, adderHO, muxHO, muxDecoderHO, dffHO, subtractorHO);
+			}
+		
+			for(int in=0; in<10; in++){
+				std::cout<<countpop[in]<<std::endl;
 			}
 		} else {    // Algorithm
 			for (int j=0; j<param->nOutput; j++) {

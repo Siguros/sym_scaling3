@@ -265,17 +265,19 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	//minConductance = maxConductance / 6.84;	// Minimum cell conductance (S)
 	maxConductance = 3.8e-8;
 	minConductance = maxConductance / 50;
+	        //shiftGmax=0.925*(maxConductance-minConductance);
+        //shiftGmin=0.657*(maxConductance-minConductance);
 	//maxConductance = 10 * minConductance;
 	//maxConductance = 1/81e4;
 	//minConductance = maxConductance /50.2;
 	//maxConductance = (1/5e6);
 	//minConductance = maxConductance/2;
-	shiftGmax=0.925*(maxConductance-minConductance);
-	shiftGmin=0.657*(maxConductance-minConductance);
+	//shiftGmax=0.925*(maxConductance-minConductance);
+	//shiftGmin=0.657*(maxConductance-minConductance);
 	//avgMaxConductance = (NumCellperSynapse)*maxConductance; // Average maximum cell conductance (S)
 	//avgMinConductance = (NumCellperSynapse)*minConductance; // Average minimum cell conductance (S)
-	avgMaxConductance = (NumCellperSynapse)*shiftGmax;
-	avgMinConductance = (NumCellperSynapse)*shiftGmin;
+	//avgMaxConductance = (NumCellperSynapse)*shiftGmax;
+        //avgMinConductance = (NumCellperSynapse)*shiftGmin;
 	conductance = minConductance;	// Current conductance (S) (dynamic variable)
 	conductancePrev = conductance;	// Previous conductance (S) (dynamic variable)
 	std::fill_n(conductanceN, NumCellperSynapse, minConductance);
@@ -323,30 +325,39 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	localGen.seed(std::time(0));
 	
 	/* Device-to-device weight update variation */
-	NL_LTP=5;	// LTP nonlinearity
-	NL_LTD=-5;	// LTD nonlinearity
-	NL_LTD=NL_LTD*(-1);
+	NL_LTP=5;// LTP nonlinearity
+	NL_LTD=5;	// LTD nonlinearity
+	//NL_LTD=NL_LTD*(-1);
 	sigmaDtoD = 0;	// Sigma of device-to-device weight update vairation in gaussian distribution
 	gaussian_dist2 = new std::normal_distribution<double>(0, sigmaDtoD);	// Set up mean and stddev for device-to-device weight update vairation
 	paramALTP = getParamA(NL_LTP + (*gaussian_dist2)(localGen)) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
 	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
 	paramBLTP = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTP/paramALTP));
-	shiftconductancelevel=8;
+	shiftconductancelevel=32;
 	/* Cycle-to-cycle weight update variation */
 	//sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
 	sigmaCtoC = 0;
 	gaussian_dist3 = new std::normal_distribution<double>(0, sigmaCtoC);    // Set up mean and stddev for cycle-to-cycle weight update vairation
 	linearpointltp = getLinear(paramALTP, maxNumLevelLTP);
 	linearpointltd= getLinear(paramALTD, maxNumLevelLTD);
-	double shiftconductancelevel=32;
+	//double shiftconductancelevel=32;
 	//shiftGmax = minConductance+(linearpointltp+shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
 	//shiftGmin = minConductance+(linearpointltp-shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
-	//shiftGmax = NonlinearWeight(linearpointltp+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	//shiftGmin = NonlinearWeight(linearpointltp-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	//shiftGmax= 0;
+	//shiftGmin= 0;
+	shiftGmax = NonlinearWeight(linearpointltp+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	shiftGmin = NonlinearWeight(linearpointltp-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	//shiftGmax=0.925*(maxConductance-minConductance);
+        //shiftGmin=0.657*(maxConductance-minConductance); 
 	symmetricpoint = getSymmetric(paramALTP, maxNumLevelLTP, paramALTD, maxNumLevelLTD);
+	//iftGmax = shiftG1;
+	//shiftGmin = shiftG2;
+//	std::cout << shiftGmax << shiftGmin << std::endl;
 	//std::cout << shiftGmax/(maxConductance-minConductance)<<std::endl;
 	//std::cout << shiftGmin/(maxConductance-minConductance)<<std::endl;
 	/* Conductance range variation */
+	 avgMaxConductance = (NumCellperSynapse)*shiftGmax;
+        avgMinConductance = (NumCellperSynapse)*shiftGmin;
 	conductanceRangeVar = false;    // Consider variation of conductance range or not
 	maxConductanceVar = 0;  // Sigma of maxConductance variation (S)
 	minConductanceVar = 0;  // Sigma of minConductance variation (S)
