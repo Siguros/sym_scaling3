@@ -347,18 +347,19 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	//shiftGmin = minConductance+(linearpointltp-shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
 	//shiftGmax= 0;
 	//shiftGmin= 0;
-	shiftGmax = NonlinearWeight(linearpointltp, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-        shiftGmin = NonlinearWeight(linearpointltd, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
+	//shiftGmax = NonlinearWeight(linearpointltp, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+    //shiftGmin = NonlinearWeight(linearpointltd, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
 	//shiftGmax = NonlinearWeight((linearpointltp+linearpointltd)/2+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	//shiftGmin = NonlinearWeight((linearpointltp+linearpointltd)/2-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	symmetricpoint = getSymmetric(paramALTP, maxNumLevelLTP,paramALTD, maxNumLevelLTD);
-	//shiftGmax = NonlinearWeight(symmetricpoint, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-        //shiftGmin = NonlinearWeight(symmetricpoint-shiftconductancelevel, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
+	symmetricG = getSymmetric(paramALTP, maxNumLevelLTP, paramBLTP, paramALTD, maxNumLevelLTD, paramBLTD, minConductance);
+    symmetricpoint = InvNonlinearWeight(symmetricG, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	//shiftGmax = NonlinearWeight(symmetricpoint+32, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	//shiftGmin = NonlinearWeight(symmetricpoint-shiftconductancelevel, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
 	
-        xPulsemaxltp = InvNonlinearWeight(shiftGmax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-        xPulseminltp = InvNonlinearWeight(shiftGmin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+    xPulsemaxltp = InvNonlinearWeight(shiftGmax, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+    xPulseminltp = InvNonlinearWeight(shiftGmin, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	xPulsemaxltd = InvNonlinearWeight(shiftGmax, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
-        xPulseminltd = InvNonlinearWeight(shiftGmin, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
+    xPulseminltd = InvNonlinearWeight(shiftGmin, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
 	shiftltplevel = (int)(xPulsemaxltp - xPulseminltp);
 	shiftltdlevel = (int)(xPulsemaxltd - xPulseminltd);
 

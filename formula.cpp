@@ -329,7 +329,10 @@ double getLinear(double A, double Pmax)
 	//turn A*log(B/A);
 }
 
-double getSymmetric(double Altp, double Pmaxltp, double Altd, double Pmaxltd)
+double getSymmetric(double Altp, double Pmaxltp, double Bltp, double Altd, double Pmaxltd, double Bltd,double Gmin)
 {
-return log(Altp/Altd*(1-exp(-Pmaxltp/Altp))/(1-exp(-Pmaxltd/Altd)))/(1 / Altd - 1 / Altp);}
+	double S1 = Pmaxltp/(Altp*(1-exp(-Pmaxltp/Altp)));
+	double S2 = Pmaxltd/(Altd*(1-exp(-Pmaxltd/Altd)));
+	double G = Gmin + (1-S2/S1)/(1/Bltp-S2/(S1*Bltd));
+	return G;}
 

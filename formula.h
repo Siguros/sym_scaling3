@@ -53,5 +53,5 @@ double InvMeasuredLTD(double conductance, int maxNumLevel, std::vector<double>& 
 double getParamA(double NL);
 double NonlinearConductance(double C, double NL, double Vw, double Vr, double V);
 double getLinear(double A, double Pmax);
-double getSymmetric(double Altp, double Pmaxltp,double Altd, double Pmaxltd);
+double getSymmetric(double Altp, double Pmaxltp,double Bltp, double Altd, double Pmaxltd, double Bltd,double Gmin);
 #endif

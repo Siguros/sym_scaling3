@@ -104,6 +104,9 @@ public:
 	double linearpointltp;
 	double linearpointltd;
 	double symmetricpoint;
+	double symmetricmax;
+	double symmetricmin;
+	double symmetricG;
 	double shiftconductancelevel;
 };
 
