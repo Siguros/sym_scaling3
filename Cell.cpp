@@ -325,22 +325,22 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	localGen.seed(std::time(0));
 	
 	/* Device-to-device weight update variation */
-	NL_LTP=5;// LTP nonlinearity
-	NL_LTD=5;	// LTD nonlinearity
+	NL_LTP=3;// LTP nonlinearity
+	NL_LTD=-3;	// LTD nonlinearity
 	//NL_LTD=NL_LTD*(-1);
 	sigmaDtoD = 0;	// Sigma of device-to-device weight update vairation in gaussian distribution
 	gaussian_dist2 = new std::normal_distribution<double>(0, sigmaDtoD);	// Set up mean and stddev for device-to-device weight update vairation
 	paramALTP = getParamA(NL_LTP + (*gaussian_dist2)(localGen)) * maxNumLevelLTP;	// Parameter A for LTP nonlinearity
 	paramALTD = getParamA(NL_LTD + (*gaussian_dist2)(localGen)) * maxNumLevelLTD;	// Parameter A for LTD nonlinearity
 	paramBLTP = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTP/paramALTP));
-	shiftconductancelevel=32;
+	shiftconductancelevel=8;
 	/* Cycle-to-cycle weight update variation */
 	//sigmaCtoC = 0.035*(maxConductance - minConductance);	// Sigma of cycle-to-cycle weight update vairation: defined as the percentage of conductance range
 	sigmaCtoC = 0;
 	gaussian_dist3 = new std::normal_distribution<double>(0, sigmaCtoC);    // Set up mean and stddev for cycle-to-cycle weight update vairation
 	linearpointltp = getLinear(paramALTP, maxNumLevelLTP);
 	linearpointltd= getLinear(paramALTD, maxNumLevelLTD);
-	//double shiftconductancelevel=32;
+	//double shiftconductancelevel=8;
 	//shiftGmax = minConductance+(linearpointltp+shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
 	//shiftGmin = minConductance+(linearpointltp-shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
 	//shiftGmax= 0;
