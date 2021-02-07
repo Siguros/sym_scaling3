@@ -414,8 +414,10 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 	double xPulsemin = linearpointltp-shiftconductancelevel/2;
 	//if(xPulsemax > maxNumLevelLTP){xPulsemax = maxNumLevelLTP;}
 	//if(xPulsemin < 0){xPulsemin = 0;}
+	double xPulsemaxltd = InvNonlinearWeight(shiftGmax, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
+	double xPulseminltd = InvNonlinearWeight(ShiftGmin, maxNumLevelLTD, paramALTD, paramBLTD, minConductance);
 	int maxNumLTP = shiftconductancelevel;
-	
+	int maxNumLTD = (int)(xPulsemaxltd - xPulseminltd);
 	
 	if (deltaWeightNormalized > 0) {	// LTP
 		deltaWeightNormalized = truncate(deltaWeightNormalized, maxNumLTP);
@@ -437,9 +439,9 @@ void RealDevice::Write(double deltaWeightNormalized, double weight, double minWe
 		}
 	} else {	// LTD
 		deltaWeightNormalized = truncate(deltaWeightNormalized, maxNumLTP);
-		numPulse = deltaWeightNormalized * maxNumLTP;
-		if (numPulse > maxNumLTP) {
-			numPulse = maxNumLTP;
+		numPulse = deltaWeightNormalized * maxNumLTD;
+		if (numPulse > maxNumLTD) {
+			numPulse = maxNumLTD;
 		}
 		if (nonlinearWrite) {
 			paramBLTD = (maxConductance - minConductance) / (1 - exp(-maxNumLevelLTD/paramALTD));
