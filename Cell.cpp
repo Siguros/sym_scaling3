@@ -345,8 +345,8 @@ RealDevice::RealDevice(int x, int y,int NumCellperSynapse) {
 	//shiftGmin = minConductance+(linearpointltp-shiftconductancelevel/2)/maxNumLevelLTP*(maxConductance-minConductance);
 	//shiftGmax= 0;
 	//shiftGmin= 0;
-	shiftGmax = NonlinearWeight(linearpointltp+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
-	shiftGmin = NonlinearWeight(linearpointltp-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	shiftGmax = NonlinearWeight((linearpointltp+linearpointltd)/2+shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
+	shiftGmin = NonlinearWeight((linearpointltp+linearpointltd)/2-shiftconductancelevel/2, maxNumLevelLTP, paramALTP, paramBLTP, minConductance);
 	//shiftGmax=0.925*(maxConductance-minConductance);
         //shiftGmin=0.657*(maxConductance-minConductance); 
 	symmetricpoint = getSymmetric(paramALTP, maxNumLevelLTP, paramALTD, maxNumLevelLTD);
