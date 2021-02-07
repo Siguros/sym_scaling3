@@ -384,9 +384,10 @@ void Validate() {
 					countNum = j;
 				}
 			}
+		}
 				if (testOutput[i][countNum] == 1) {
 			correct++;
-		}
+		
 		}
 	}
 	if (!param->useHardwareInTraining) {    // Calculate the classification latency and energy only for offline classification
@@ -402,11 +403,11 @@ void Validate() {
 						for (int j=0; j<param->nHide; j++){ 
 						for (int i=0; i<param->nInput; i++) {					
 						for(int in=0; in<10; in++){
-						double s1= in/10;
-						double s2 =(in+1)/10;
+						double s1= (double)in/10;
+						double s2 =(double)(in+1)/10;
 						int numcell= static_cast<AnalogNVM*>(arrayIH->cell[0][0])->NumCellperSynapse;
 						for(int jn=0;jn<numcell; jn++){
-						double s3 = static_cast<AnalogNVM*>(arrayIH->cell[i][j])->conductanceN[jn];
+						double s3 = static_cast<AnalogNVM*>(arrayIH->cell[j][i])->conductanceN[jn];
 						double minCon = static_cast<AnalogNVM*>(arrayIH->cell[0][0])->minConductance;
 						double maxCon = static_cast<AnalogNVM*>(arrayHO->cell[0][0])->maxConductance;
 						double s4 = (s3-minCon)/(maxCon-minCon);
