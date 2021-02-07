@@ -420,8 +420,8 @@ void Validate() {
 
 						}
 						}
-				for(int in=0; in<10; in++){
-				std::cout<<countpop[in]<<std::endl;
+				for(int kn=0; kn<10; kn++){
+				std::cout<<countpop[kn]<<std::endl;
 			}
 						} 
 
