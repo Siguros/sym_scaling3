@@ -389,9 +389,7 @@ void Validate() {
 				sumReadLatencyHO += NeuroSimNeuronReadLatency(subArrayHO, adderHO, muxHO, muxDecoderHO, dffHO, subtractorHO);
 			}
 		
-			for(int in=0; in<10; in++){
-				std::cout<<countpop[in]<<std::endl;
-			}
+	
 		} else {    // Algorithm
 			for (int j=0; j<param->nOutput; j++) {
 				for (int k=0; k<param->nHide; k++) {
@@ -404,7 +402,9 @@ void Validate() {
 				}
 			}
 		}
-	
+		if (testOutput[i][countNum] == 1) {
+			correct++;
+		}
 	}
 	if (!param->useHardwareInTraining) {    // Calculate the classification latency and energy only for offline classification
 		arrayIH->readEnergy += sumArrayReadEnergyIH;
@@ -414,8 +414,8 @@ void Validate() {
 		subArrayIH->readLatency += sumReadLatencyIH;
 		subArrayHO->readLatency += sumReadLatencyHO;
 	}
-		if (testOutput[i][countNum] == 1) {
-			correct++;
-		}
+			for(int in=0; in<10; in++){
+				std::cout<<countpop[in]<<std::endl;
+			}
 }
 
