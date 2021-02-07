@@ -150,8 +150,9 @@ void Validate() {
 						double s3 = static_cast<AnalogNVM*>(arrayIH->cell[0][0])->conductanceN[jn];
 						double minCon = static_cast<AnalogNVM*>(arrayIH->cell[0][0])->minConductance;
 						double maxCon = static_cast<AnalogNVM*>(arrayHO->cell[0][0])->maxConductance;
-						if(s3>s1){
-						if(s3<s2){
+						double s4 = (s3-minCon)/(maxCon-minCon);
+							if(s4>=s1){
+						if(s4<s2){
 						countpop[in]+=1;
 						}
 						} 
