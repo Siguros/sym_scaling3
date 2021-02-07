@@ -422,7 +422,7 @@ void Validate() {
 						}
 						}
 				for(int kn=0; kn<10; kn++){
-				std::cout<<countpop[kn]<<std::endl;
+				//std::cout<<countpop[kn]<<std::endl;
 			}
 						} 
 

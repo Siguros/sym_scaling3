@@ -138,6 +138,7 @@ int main() {
 	printf("opt: %s NL:%.2f N: %d CS: %d LA: %.2f\n", param->optimization_type, NL, N, CS, LA);
 	printf("shiftlevel: %d\n", shift);
 	string filename;
+	filename.append("sym");
 	filename.append(param->optimization_type);
 	char tempfile[10];
 	sprintf(tempfile, "%.2f", NL);
@@ -151,8 +152,11 @@ int main() {
 	// filename.append("/");
 	sprintf(tempfile, "%.2f", LA);
 	filename.append(tempfile);
+	sprintf(tempfile,"%d",shift);
+	filename.append(tempfile);
 	// filename.append("/");
 	// filename.append(".csv");
+
 	mywriteoutfile.open(filename+".csv");
 	/*string filename = sprintf()*/
 	for (int i=1; i<=param->totalNumEpochs/param->interNumEpochs; i++) {

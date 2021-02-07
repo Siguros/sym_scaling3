@@ -331,6 +331,5 @@ double getLinear(double A, double Pmax)
 
 double getSymmetric(double Altp, double Pmaxltp, double Altd, double Pmaxltd)
 {
-	return log(Pmaxltd*(1 - exp(-Pmaxltp / Altp)/Altd)/ (Pmaxltp*(1 - exp(-Pmaxltd / Altd)))/Altp)*(1 / Altd - 1 / Altp);
-}
+return log(Pmaxltd*(1 - exp(-Pmaxltp / Altp)/Altd)/ (Pmaxltp*(1 - exp(-Pmaxltd / Altd)))/Altp)*(1 / Altd - 1 / Altp);}
 
