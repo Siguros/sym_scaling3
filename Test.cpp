@@ -145,7 +145,7 @@ void Validate() {
 						for(int in=0; in<10; in++){
 						double s1= in/10;
 						double s2 =(in+1)/10;
-						int numcell= static_cast<AnalogNVM*>(arraIH->cell[0][0])->NumCellperSynapse;
+						int numcell= static_cast<AnalogNVM*>(arrayIH->cell[0][0])->NumCellperSynapse;
 						for(int jn=0;jn<numcell; jn++){
 						double s3 = static_cast<AnalogNVM*>(arrayIH->cell[0][0])->conductanceN[jn];
 						double minCon = static_cast<AnalogNVM*>(arrayIH->cell[0][0])->minConductance;
@@ -157,6 +157,7 @@ void Validate() {
 						} 
 						}
 
+						}
 						}
 						sumArrayReadEnergyIH += Isum * readVoltageIH * readPulseWidthIH;
 						int outputDigits = 2*(CurrentToDigits(Isum, IsumMax-IsumMin)-CurrentToDigits(inputSum, IsumMax-IsumMin));
